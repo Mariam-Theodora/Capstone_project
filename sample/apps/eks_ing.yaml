@@ -1,0 +1,58 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: eks-ingress
+#   namespace: argocd
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     cert-manager.io/cluster-issuer: letsencrypt-production
+# spec:
+#   rules:
+#     - host: prometheus.saluteslim.me
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: prometheus-server
+#                 port:
+#                   name: http
+#     - host: grafana.saluteslim.me
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: grafana
+#                 port:
+#                   name: service
+#     - host: simple-app.saluteslim.me
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: front-end
+#                 port:
+#                   name: http
+#                 namespace: sock-shop
+#     - host: mysock-shop.saluteslim.me
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: exam-service
+#                 port:
+#                   number: 80
+#   tls:
+#     - hosts:
+#         - prometheus.saluteslim.me
+#         - grafana.saluteslim.me
+#         - mysock-shop.saluteslim.me
+#         - simple-app.saluteslim.me
+#       secretName: exam-apps

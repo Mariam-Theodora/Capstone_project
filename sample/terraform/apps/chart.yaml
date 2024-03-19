@@ -1,0 +1,21 @@
+applications:
+    - name: argo-apps
+      namespace: argocd
+      destination:
+        namespace: argocd
+        server: https://kubernetes.default.svc
+      project: default
+      source:
+        path: apps
+        repoURL: https://github.com/saluteslim/tera-eks.git
+        targetRevision: main
+        directory:
+          recurse: true
+          jsonnet: {}
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+projects: []
+applicationsets: []
+extensions: []

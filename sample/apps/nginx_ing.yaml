@@ -1,0 +1,29 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: ingress-nginx
+#   namespace: argocd
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   destination:
+#     namespace: ingress-nginx
+#     server: https://kubernetes.default.svc
+#   project: default
+#   sources:
+#   - repoURL: https://github.com/saluteslim/tera-eks.git
+#     targetRevision: main
+#     ref: exam
+#   - repoURL: https://kubernetes.github.io/ingress-nginx
+#     chart: ingress-nginx
+#     targetRevision: 4.5.2
+#     helm:
+#       releaseName: nginx-ingress
+#       valueFiles:
+#         - $exam/apps/apps-values/nginx_ing.yaml         
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#     - CreateNamespace=true

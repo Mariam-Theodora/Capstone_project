@@ -1,0 +1,95 @@
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: terminate-ec2-cronjob
+#   namespace: argocd
+# spec:
+#   schedule: "*/2 * * * *"  # Cron expression (every 2 minutes in this case)
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           serviceAccountName: privileged-service-account
+#           containers:
+#           - name: terminate-ec2-container
+#             image: saluteslim/terminate:1.2  # Use the image you built
+#           restartPolicy: OnFailure
+
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: ec2-terminator
+#   namespace: argocd
+# spec:
+#   schedule: "*/2 * * * *"
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           restartPolicy: Never
+#           serviceAccountName: ec2-terminator-sa
+#           containers:
+#             - name: ec2-terminator
+#               image: saluteslim/terminate-ec2-job:2.1
+#               imagePullPolicy: Always
+
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: ec2-terminator-sa
+#   namespace: argocd
+
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: terminate-ec2-cronjob
+#   namespace: argocd
+# spec:
+#   schedule: "*/2 * * * *" # Schedule the job to run every 2 minutes
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           serviceAccountName: ec2-terminator-sa
+#           containers:
+#             - name: terminate-ec2-container
+#               image: saluteslim/bash:1.1
+#           restartPolicy: OnFailure
+
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: ec2-terminator-sa
+#   namespace: argocd
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: terminate-ec2
+  namespace: argocd
+spec:
+  schedule: "*/4 * * * *" 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ec2-terminator-sa
+          containers:
+            - name: terminate-ec2-instances
+              image: saluteslim/bash:1.2
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  value: ""
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: ""
+                - name: AWS_DEFAULT_REGION
+                  value: "eu-west-2"
+          restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ec2-terminator-sa
+  namespace: argocd          

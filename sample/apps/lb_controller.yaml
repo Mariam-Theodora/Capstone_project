@@ -1,0 +1,28 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: lb-controller
+#   namespace: argocd
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   destination:
+#     namespace: kube-system
+#     server: https://kubernetes.default.svc
+#   project: default
+#   sources:
+#   - repoURL: https://github.com/saluteslim/tera-eks.git
+#     targetRevision: HEAD
+#     ref: exam
+#   - repoURL: https://aws.github.io/eks-charts
+#     chart: aws-load-balancer-controller
+#     targetRevision: 1.4.8
+#     helm:
+#       valueFiles:
+#         - $exam/apps/apps-values/lb-controller.yaml         
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#     - CreateNamespace=true
